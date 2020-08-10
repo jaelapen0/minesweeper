@@ -6,20 +6,23 @@ class Tile
         @revealed = false
     end
 
-    def reveal
+    def reveal#(pos)
         if @revealed
-            #if @value == 
             return @value
         else
             return  "?"
         end
     end
 
-    def neighbors
-        
+    def neighbors(pos)
+        list = []
+        x,y = pos
+        list.push( [x-1,y], [x+1,y], [x,y-1], [x,y+1])
+        return list        
     end
 
-    def neighbors_bomb_count
+    def neighbors_bomb_count(pos)
+        list = neighbors(pos)
 
     end
 

@@ -1,22 +1,44 @@
-
+require 'colorize'
 require_relative "./tile.rb"
 
 class Board
-
+        attr_reader :grid
     def initialize
-        @grid = Array.new(9){Array.new(9) {Tile.new([true,true,false].sample ? 0 : 1)} }
+        @grid = Array.new(9){Array.new(9) {Tile.new([true,true,true,false,false].sample ? 0 : 1)} }
     end
 
     def render
-        puts "   0 1 2 3 4 5 6 7 8"
+        puts "   0 1 2 3 4 5 6 7 8".blue
         @grid.each_with_index do |row, i|
-            print "#{i} "
-            row.each do |tile|
-                print " #{tile.reveal}"
+            print "#{i} ".blue
+            row.each_with_index do |tile, ridx|
+                count = count_neighbors([i,ridx])
+                if tile.revealed  && tile.value == "*"
+                    print " #{count}".green
+
+                else# count == 0
+                    print " #{tile.reveal}".yellow #if @tile.value == "*"
+                    
+                end
             end
             puts
         end
         nil
+    end
+
+    def count_neighbors(pos)
+        counter = 0
+        x,y = pos
+        list =  @grid[x][y].neighbors([x,y])
+        list.each do |coor|
+            if valid_pos?(coor)
+                a,b = coor
+                if @grid[a][b].value == "B"
+                    counter += 1
+                end
+            end
+        end
+        return counter
     end
 
     def win?
@@ -32,16 +54,31 @@ class Board
 
     def pos(array)
         x,y = array
-     #   return if @grid[x.]
+        return "already revealed" if @grid[x][y].revealed == true
+        return if valid_pos?(array) == false
+
         if @grid[x][y].revealed == false
             @grid[x][y].revealed = true
+            if @grid[x][y].value == "B" 
+                return
+            end
+            
+            @grid[x][y].neighbors([x,y]).each do |coor|
+                a,b = coor
+                pos(coor) if (valid_pos?(coor) && !(@grid[a][b].value == "B"))
+            end
         else
-            raise "this tile is already revealed"
+            puts "already revealed"
+            return
         end
     end
 
     def valid_pos?(array)
-        array.all? {|el| el < 9 & el >=0}
+        array.all? {|el| el < 9 && el >=0}
+    end
+
+    def listofneighbors
+
     end
 
     def lose?
