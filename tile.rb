@@ -1,9 +1,14 @@
 class Tile
-    attr_reader :value
-    attr_accessor :revealed
+    attr_reader   :value
+    attr_accessor :revealed , :flagged
     def initialize(value)
         @value = value == 1 ? "B" : "*"
         @revealed = false
+        @flagged = false
+    end
+
+    def value
+        @value
     end
 
     def reveal#(pos)

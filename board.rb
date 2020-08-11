@@ -1,6 +1,6 @@
 require 'colorize'
 require_relative "./tile.rb"
-
+require "byebug"
 class Board
         attr_reader :grid
     def initialize
@@ -15,7 +15,10 @@ class Board
                 count = count_neighbors([i,ridx])
                 if tile.revealed  && tile.value == "*"
                     print " #{count}".green
-
+                elsif tile.flagged
+                    print " F".red
+                elsif tile.revealed  && tile.value == "B"
+                    print " B".red
                 else# count == 0
                     print " #{tile.reveal}".yellow #if @tile.value == "*"
                     
@@ -52,6 +55,15 @@ class Board
         return true
     end
 
+    def toggle(pos)
+        x,y = pos
+        if @grid[x][y].flagged == true
+            @grid[x][y].flagged = false
+        else
+            @grid[x][y].flagged = true
+        end
+    end
+
     def pos(array)
         x,y = array
         return "already revealed" if @grid[x][y].revealed == true
@@ -84,7 +96,8 @@ class Board
     def lose?
         @grid.each do |row|
             row.each do |tile|
-                return true if tile.value == "B" && tile.revealed == true
+               #debugger
+                return true if (tile.value == "B" && tile.revealed == true)
             end
         end
         return false
