@@ -28,7 +28,6 @@ class Tile
 
     def neighbors_bomb_count(pos)
         list = neighbors(pos)
-
     end
 
 end

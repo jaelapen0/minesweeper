@@ -28,14 +28,23 @@ class Game
     end
 
     def play
+        t1 = Time.now
+        
         until @board.win? || @board.lose?
             @board.render
             self.take_input
         end
 
+        t2 = Time.now
         @board.render
+        
+        
+        puts "Game took #{t2-t1} seconds".light_red
         return "YOU LOSE" if @board.lose?
-        return "YOU WIN" if @board.win?
+        if @board.win?
+            #puts "Game took #{t2-t1} seconds"
+            return "YOU WIN".green
+        end 
     end
 
     def save 
